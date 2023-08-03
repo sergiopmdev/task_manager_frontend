@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 export default function Home() {
-  return <h1 className="text-4xl">Home page</h1>;
+  return <Button variant="outline">Home page</Button>;
 }
