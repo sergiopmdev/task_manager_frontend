@@ -76,7 +76,7 @@ export default function RegisterPage() {
           />
         </div>
         <div className={styles.labelInputWrapper}>
-          <Label htmlFor="password">Name</Label>
+          <Label htmlFor="password">Password</Label>
           <Input
             {...register('password')}
             type="password"
