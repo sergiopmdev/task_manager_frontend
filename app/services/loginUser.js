@@ -39,6 +39,13 @@ export default function loginUser(userData) {
       if (statusCode === 401) {
         throw new WrongCredentials('Incorrect email or password');
       }
+      const json = response.json();
+      json.then((data) => {
+        const userData = data['user_data'];
+        localStorage.setItem('name', userData['name']);
+        localStorage.setItem('email', userData['email']);
+        localStorage.setItem('token', data['access_token']);
+      });
     })
     .catch((error) => {
       Promise.reject(error);

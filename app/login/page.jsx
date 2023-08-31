@@ -35,8 +35,8 @@ export default function LoginPage() {
   const statusCode = useLogin((state) => state.statusCode);
 
   useEffect(() => {
-    if (statusCode === 200) {
-      router.push('/user');
+    if (statusCode === 200 && localStorage.getItem('name')) {
+      router.push(`/user/${localStorage.getItem('name').toLowerCase()}`);
     }
   }, [statusCode]);
 
