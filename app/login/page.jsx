@@ -3,11 +3,17 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { RotateCw } from 'lucide-react';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import useLogin from '../stores/login';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema } from '../validation/login';
+
+import loginUser from '../services/loginUser';
 
 const styles = {
   labelInputWrapper: 'relative flex flex-col gap-2',
@@ -15,6 +21,8 @@ const styles = {
 };
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -23,11 +31,21 @@ export default function LoginPage() {
     resolver: yupResolver(loginSchema),
   });
 
+  const loading = useLogin((state) => state.loading);
+  const statusCode = useLogin((state) => state.statusCode);
+
+  useEffect(() => {
+    if (statusCode === 200) {
+      router.push('/user');
+    }
+  }, [statusCode]);
+
   function onSubmitHandler(userData) {
-    console.log(userData);
+    loginUser(userData);
   }
 
   const errorsExists = errors.email || errors.password;
+  const loadingOrSuccessful = loading || statusCode === 200;
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
@@ -35,6 +53,11 @@ export default function LoginPage() {
         className="relative flex w-[22rem] flex-col gap-4 rounded-md bg-gray-100 px-6 py-7"
         onSubmit={handleSubmit(onSubmitHandler)}
       >
+        {statusCode === 401 && (
+          <span className="absolute -top-8 right-0 rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-red-200">
+            Wrong credentials
+          </span>
+        )}
         <h1 className="mb-4 text-3xl font-semibold">Sign in</h1>
         <div className={styles.labelInputWrapper}>
           <Label htmlFor="email">Email</Label>
@@ -62,8 +85,15 @@ export default function LoginPage() {
             )}
           </div>
         )}
-        <Button className="mt-4 bg-gray-700" type="submit">
-          Send
+        <Button
+          className="mt-4 bg-gray-700"
+          type="submit"
+          disabled={loadingOrSuccessful}
+        >
+          {loadingOrSuccessful && (
+            <RotateCw className="mr-2 h-5 w-5 animate-spin" />
+          )}
+          {!loadingOrSuccessful ? 'Send' : 'Sending'}
         </Button>
       </form>
     </div>
