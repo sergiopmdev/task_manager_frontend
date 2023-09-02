@@ -8,19 +8,19 @@ import { RotateCw } from 'lucide-react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import useRegister from '../stores/register';
+import useLogin from '../stores/login';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { registerSchema } from '../validation/register';
+import { loginSchema } from '../validation/login';
 
-import registerUser from '../services/registerUser';
+import loginUser from '../services/loginUser';
 
 const styles = {
   labelInputWrapper: 'relative flex flex-col gap-2',
   inputError: 'text-xs text-red-600 line-clamp-1',
 };
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
 
   const {
@@ -28,24 +28,24 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(registerSchema),
+    resolver: yupResolver(loginSchema),
   });
 
-  const loading = useRegister((state) => state.loading);
-  const statusCode = useRegister((state) => state.statusCode);
+  const loading = useLogin((state) => state.loading);
+  const statusCode = useLogin((state) => state.statusCode);
 
   useEffect(() => {
-    if (statusCode === 201) {
-      router.push('/login');
+    if (statusCode === 200 && localStorage.getItem('name')) {
+      router.push(`/user/${localStorage.getItem('name').toLowerCase()}`);
     }
   }, [statusCode]);
 
   function onSubmitHandler(userData) {
-    registerUser(userData);
+    loginUser(userData);
   }
 
-  const errorsExists = errors.name || errors.email || errors.password;
-  const loadingOrSuccessful = loading || statusCode === 201;
+  const errorsExists = errors.email || errors.password;
+  const loadingOrSuccessful = loading || statusCode === 200;
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
@@ -53,20 +53,12 @@ export default function RegisterPage() {
         className="relative flex w-[22rem] flex-col gap-4 rounded-md bg-gray-100 px-6 py-7"
         onSubmit={handleSubmit(onSubmitHandler)}
       >
-        {statusCode === 409 && (
+        {statusCode === 401 && (
           <span className="absolute -top-8 right-0 rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-red-200">
-            User already exists
+            Wrong credentials
           </span>
         )}
-        <h1 className="mb-4 text-3xl font-semibold">Sign up</h1>
-        <div className={styles.labelInputWrapper}>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            {...register('name')}
-            type="text"
-            placeholder="Put your name..."
-          />
-        </div>
+        <h1 className="mb-4 text-3xl font-semibold">Sign in</h1>
         <div className={styles.labelInputWrapper}>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -85,9 +77,6 @@ export default function RegisterPage() {
         </div>
         {errorsExists && (
           <div className="pl-2">
-            {errors.name?.message && (
-              <p className={styles.inputError}>* {errors.name?.message}</p>
-            )}
             {errors.email?.message && (
               <p className={styles.inputError}>* {errors.email?.message}</p>
             )}
