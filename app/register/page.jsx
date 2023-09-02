@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, CheckSquare } from 'lucide-react';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -48,7 +48,11 @@ export default function RegisterPage() {
   const loadingOrSuccessful = loading || statusCode === 201;
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
+    <div className="relative m-auto flex h-screen w-screen max-w-[1440px] items-center justify-center">
+      <div className="absolute left-5 top-5 flex cursor-pointer items-center gap-2">
+        <h1 className="text-2xl font-semibold">TM</h1>
+        <CheckSquare className="stroke-[3px]" />
+      </div>
       <form
         className="relative flex w-[22rem] flex-col gap-4 rounded-md bg-gray-100 px-6 py-7"
         onSubmit={handleSubmit(onSubmitHandler)}
