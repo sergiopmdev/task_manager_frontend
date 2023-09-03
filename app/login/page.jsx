@@ -5,16 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RotateCw, CheckSquare } from 'lucide-react';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import useLogin from '../stores/login';
-import useUser from '../stores/user';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema } from '../validation/login';
 
-import checkUserAuth from '../services/checkUserAuth';
 import loginUser from '../services/loginUser';
 
 const styles = {
@@ -24,6 +22,7 @@ const styles = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const [notAuth, setNotAuth] = useState(false);
 
   const {
     register,
@@ -35,17 +34,13 @@ export default function LoginPage() {
 
   const loading = useLogin((state) => state.loading);
   const statusCode = useLogin((state) => state.statusCode);
-  const authenticated = useUser((state) => state.authenticated);
 
   useEffect(() => {
-    const setAuthenticated = useUser.getState().setAuthenticated;
-    if (localStorage.getItem('name')) {
-      setAuthenticated('authenticated');
+    const name = localStorage.getItem('name');
+    if (name) {
+      router.push(`/user/${name}`);
     } else {
-      setAuthenticated('unauthenticated');
-    }
-    if (checkUserAuth() === 'authenticated') {
-      router.push(`/user/${localStorage.getItem('name').toLowerCase()}`);
+      setNotAuth(true);
     }
   }, []);
 
@@ -56,7 +51,7 @@ export default function LoginPage() {
   const errorsExists = errors.email || errors.password;
   const loadingOrSuccessful = loading || statusCode === 200;
 
-  if (authenticated === 'unauthenticated') {
+  if (notAuth) {
     return (
       <div className="relative m-auto flex h-screen w-screen max-w-[1440px] items-center justify-center">
         <div className="absolute left-5 top-5 flex cursor-pointer items-center gap-2">

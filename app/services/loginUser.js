@@ -12,7 +12,6 @@ export default function loginUser(userData, router) {
   const setLoading = useLogin.getState().setLoading;
   const setStatusCode = useLogin.getState().setStatusCode;
 
-  const setAuthenticated = useUser.getState().setAuthenticated;
   const setName = useUser.getState().setName;
   const setEmail = useUser.getState().setEmail;
   const setToken = useUser.getState().setToken;
@@ -45,7 +44,6 @@ export default function loginUser(userData, router) {
       if (statusCode === 401) {
         throw new WrongCredentials('Incorrect email or password');
       }
-      setAuthenticated('authenticated');
       const json = response.json();
       json.then((data) => {
         const userData = data['user_data'];

@@ -3,37 +3,25 @@
 import { Button } from '@/components/ui/button';
 import { CheckSquare } from 'lucide-react';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useUser from '@/app/stores/user';
 
-import checkUserAuth from '@/app/services/checkUserAuth';
-import logoutUser from '@/app/services/logoutUser';
-
 export default function UserPage() {
   const router = useRouter();
-  const authenticated = useUser((state) => state.authenticated);
+  const [auth, setAuth] = useState(false);
   const name = useUser((state) => state.name);
 
   useEffect(() => {
-    const setAuthenticated = useUser.getState().setAuthenticated;
-    const setName = useUser.getState().setName;
-    const setEmail = useUser.getState().setEmail;
-    const setToken = useUser.getState().setToken;
     if (localStorage.getItem('name')) {
-      setAuthenticated('authenticated');
-      setName(localStorage.getItem('name'));
-      setEmail(localStorage.getItem('email'));
-      setToken(localStorage.getItem('token'));
+      persistUserData();
+      setAuth(true);
     } else {
-      setAuthenticated('unauthenticated');
-    }
-    if (checkUserAuth() === 'unauthenticated') {
       router.push('/login');
     }
   }, []);
 
-  if (authenticated === 'authenticated') {
+  if (auth) {
     return (
       <>
         <header className="h-20 w-full">
@@ -45,7 +33,14 @@ export default function UserPage() {
             <div className="flex items-center gap-4">
               <h1>{name}</h1>
               <span>|</span>
-              <Button className="h-9" onClick={() => logoutUser(router)}>
+              <Button
+                className="h-9"
+                onClick={() => {
+                  setAuth(false);
+                  endUserSession(router);
+                  router.push('/login');
+                }}
+              >
                 Logout
               </Button>
             </div>
@@ -54,4 +49,17 @@ export default function UserPage() {
       </>
     );
   }
+}
+
+function persistUserData() {
+  useUser.getState().setName(localStorage.getItem('name'));
+  useUser.getState().setEmail(localStorage.getItem('email'));
+  useUser.getState().setToken(localStorage.getItem('token'));
+}
+
+function endUserSession() {
+  localStorage.clear();
+  useUser.getState().setName(undefined);
+  useUser.getState().setEmail(undefined);
+  useUser.getState().setToken(undefined);
 }
