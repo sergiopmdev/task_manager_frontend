@@ -5,20 +5,28 @@ import { CheckSquare } from 'lucide-react';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import useUser from '@/app/stores/user';
 
 import checkUserAuth from '@/app/services/checkUserAuth';
 import logoutUser from '@/app/services/logoutUser';
 
 export default function UserPage() {
   const router = useRouter();
+  const authenticated = useUser((state) => state.authenticated);
 
   useEffect(() => {
-    if (!checkUserAuth()) {
+    const setAuthenticated = useUser.getState().setAuthenticated;
+    if (localStorage.getItem('name')) {
+      setAuthenticated('authenticated');
+    } else {
+      setAuthenticated('unauthenticated');
+    }
+    if (checkUserAuth() === 'unauthenticated') {
       router.push('/login');
     }
   }, []);
 
-  if (checkUserAuth()) {
+  if (authenticated === 'authenticated') {
     return (
       <>
         <header className="h-20 w-full">
