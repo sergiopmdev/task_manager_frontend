@@ -13,11 +13,18 @@ import logoutUser from '@/app/services/logoutUser';
 export default function UserPage() {
   const router = useRouter();
   const authenticated = useUser((state) => state.authenticated);
+  const name = useUser((state) => state.name);
 
   useEffect(() => {
     const setAuthenticated = useUser.getState().setAuthenticated;
+    const setName = useUser.getState().setName;
+    const setEmail = useUser.getState().setEmail;
+    const setToken = useUser.getState().setToken;
     if (localStorage.getItem('name')) {
       setAuthenticated('authenticated');
+      setName(localStorage.getItem('name'));
+      setEmail(localStorage.getItem('email'));
+      setToken(localStorage.getItem('token'));
     } else {
       setAuthenticated('unauthenticated');
     }
@@ -36,7 +43,7 @@ export default function UserPage() {
               <CheckSquare className="stroke-[3px]" />
             </div>
             <div className="flex items-center gap-4">
-              <h1>{localStorage.getItem('name')}</h1>
+              <h1>{name}</h1>
               <span>|</span>
               <Button className="h-9" onClick={() => logoutUser(router)}>
                 Logout

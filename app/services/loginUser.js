@@ -11,7 +11,11 @@ class WrongCredentials extends Error {
 export default function loginUser(userData, router) {
   const setLoading = useLogin.getState().setLoading;
   const setStatusCode = useLogin.getState().setStatusCode;
+
   const setAuthenticated = useUser.getState().setAuthenticated;
+  const setName = useUser.getState().setName;
+  const setEmail = useUser.getState().setEmail;
+  const setToken = useUser.getState().setToken;
 
   setLoading(true);
 
@@ -48,6 +52,9 @@ export default function loginUser(userData, router) {
         localStorage.setItem('name', userData['name']);
         localStorage.setItem('email', userData['email']);
         localStorage.setItem('token', data['access_token']);
+        setName(userData['name']);
+        setEmail(userData['email']);
+        setToken(userData['token']);
         router.push(`/user/${userData['name'].toLowerCase()}`);
       });
     })
