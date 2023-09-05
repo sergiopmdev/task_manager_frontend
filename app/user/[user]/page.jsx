@@ -7,15 +7,20 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useUser from '@/app/stores/user';
 
+import getTasks from '@/app/services/getTasks';
+import endUserSession from '@/app/utils/endUserSession';
+
 export default function UserPage() {
   const router = useRouter();
   const [auth, setAuth] = useState(false);
   const name = useUser((state) => state.name);
+  const tasks = useUser((state) => state.tasks);
 
   useEffect(() => {
     if (localStorage.getItem('name')) {
       persistUserData();
       setAuth(true);
+      getTasks(router);
     } else {
       router.push('/login');
     }
@@ -55,11 +60,4 @@ function persistUserData() {
   useUser.getState().setName(localStorage.getItem('name'));
   useUser.getState().setEmail(localStorage.getItem('email'));
   useUser.getState().setToken(localStorage.getItem('token'));
-}
-
-function endUserSession() {
-  localStorage.clear();
-  useUser.getState().setName(undefined);
-  useUser.getState().setEmail(undefined);
-  useUser.getState().setToken(undefined);
 }
