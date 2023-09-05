@@ -11,6 +11,7 @@ class WrongCredentials extends Error {
 export default function loginUser(userData, router) {
   const setLoading = useLogin.getState().setLoading;
   const setStatusCode = useLogin.getState().setStatusCode;
+  const reset = useLogin.getState().reset;
 
   const setName = useUser.getState().setName;
   const setEmail = useUser.getState().setEmail;
@@ -54,6 +55,7 @@ export default function loginUser(userData, router) {
         setEmail(userData['email']);
         setToken(userData['token']);
         router.push(`/user/${userData['name'].toLowerCase()}`);
+        setTimeout(() => reset(), 2000);
       });
     })
     .catch((error) => {

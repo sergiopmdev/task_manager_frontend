@@ -22,6 +22,7 @@ const styles = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const reset = useRegister((state) => state.reset);
 
   const {
     register,
@@ -37,6 +38,7 @@ export default function RegisterPage() {
   useEffect(() => {
     if (statusCode === 201) {
       router.push('/login');
+      setTimeout(() => reset(), 2000);
     }
   }, [statusCode]);
 
