@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { CheckSquare } from 'lucide-react';
+import Tasks from '@/components/user/tasks';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -51,6 +52,8 @@ export default function UserPage() {
             </div>
           </div>
         </header>
+        <Tasks tasks={tasks} />
+        <Button className="absolute bottom-5 right-5">Add task</Button>
       </>
     );
   }
