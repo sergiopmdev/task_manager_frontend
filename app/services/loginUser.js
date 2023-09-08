@@ -1,4 +1,5 @@
 import useLogin from '../stores/login';
+import useUser from '../stores/user';
 
 class WrongCredentials extends Error {
   constructor(message) {
@@ -7,9 +8,14 @@ class WrongCredentials extends Error {
   }
 }
 
-export default function loginUser(userData) {
+export default function loginUser(userData, router) {
   const setLoading = useLogin.getState().setLoading;
   const setStatusCode = useLogin.getState().setStatusCode;
+  const reset = useLogin.getState().reset;
+
+  const setName = useUser.getState().setName;
+  const setEmail = useUser.getState().setEmail;
+  const setToken = useUser.getState().setToken;
 
   setLoading(true);
 
@@ -45,6 +51,11 @@ export default function loginUser(userData) {
         localStorage.setItem('name', userData['name']);
         localStorage.setItem('email', userData['email']);
         localStorage.setItem('token', data['access_token']);
+        setName(userData['name']);
+        setEmail(userData['email']);
+        setToken(userData['token']);
+        router.push(`/user/${userData['name'].toLowerCase()}`);
+        setTimeout(() => reset(), 2000);
       });
     })
     .catch((error) => {
