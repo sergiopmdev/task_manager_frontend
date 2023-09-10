@@ -41,6 +41,10 @@ export default function UserPage() {
             <div className="flex items-center gap-4">
               <h1>{name}</h1>
               <span>|</span>
+              <Button className="h-9" onClick={() => setShowAddTaskModal(true)}>
+                Add task
+              </Button>
+              <span>|</span>
               <Button
                 className="h-9"
                 onClick={() => {
@@ -55,12 +59,6 @@ export default function UserPage() {
           </div>
         </header>
         <Tasks tasks={tasks} />
-        <Button
-          className="absolute bottom-5 right-5"
-          onClick={() => setShowAddTaskModal(true)}
-        >
-          Add task
-        </Button>
         {showAddTaskModal && (
           <AddTaskModal showAddTaskModal={setShowAddTaskModal} />
         )}
