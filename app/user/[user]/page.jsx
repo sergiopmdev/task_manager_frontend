@@ -10,12 +10,14 @@ import useUser from '@/app/stores/user';
 
 import getTasks from '@/app/services/getTasks';
 import endUserSession from '@/app/utils/endUserSession';
+import AddTaskModal from '@/components/user/addTaskModal';
 
 export default function UserPage() {
   const router = useRouter();
   const [auth, setAuth] = useState(false);
   const name = useUser((state) => state.name);
   const tasks = useUser((state) => state.tasks);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem('name')) {
@@ -39,6 +41,10 @@ export default function UserPage() {
             <div className="flex items-center gap-4">
               <h1>{name}</h1>
               <span>|</span>
+              <Button className="h-9" onClick={() => setShowAddTaskModal(true)}>
+                Add task
+              </Button>
+              <span>|</span>
               <Button
                 className="h-9"
                 onClick={() => {
@@ -53,7 +59,9 @@ export default function UserPage() {
           </div>
         </header>
         <Tasks tasks={tasks} />
-        <Button className="absolute bottom-5 right-5">Add task</Button>
+        {showAddTaskModal && (
+          <AddTaskModal showAddTaskModal={setShowAddTaskModal} />
+        )}
       </>
     );
   }
