@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Trash2, FileEdit, Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -22,7 +22,37 @@ export default function Task(props) {
       >
         {priority}
       </span>
-      <Button className="absolute bottom-2 right-2 h-7">Edit</Button>
+      <div className="absolute bottom-2 right-2 flex gap-1">
+        <IconBlock type="success" icon={Check} />
+        <IconBlock type="edit" icon={FileEdit} />
+        <IconBlock type="delete" icon={Trash2} />
+      </div>
+    </div>
+  );
+}
+
+function IconBlock(props) {
+  const Icon = props.icon;
+  const type = props.type;
+
+  return (
+    <div
+      className={cn(
+        'flex h-7 w-6 cursor-pointer items-center justify-center rounded-lg hover:bg-opacity-80',
+        {
+          'bg-red-700': type == 'delete',
+          'bg-blue-700': type == 'edit',
+          'bg-green-700': type == 'success',
+        }
+      )}
+    >
+      <Icon
+        className={cn('w-3.5', {
+          'text-red-300': type == 'delete',
+          'text-blue-300': type == 'edit',
+          'text-green-300': type == 'success',
+        })}
+      />
     </div>
   );
 }
