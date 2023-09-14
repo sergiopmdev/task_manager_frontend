@@ -1,3 +1,9 @@
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
 import { Trash2, FileEdit, Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -23,9 +29,31 @@ export default function Task(props) {
         {priority}
       </span>
       <div className="absolute bottom-2 right-2 flex gap-1">
-        <IconBlock type="success" icon={Check} />
-        <IconBlock type="edit" icon={FileEdit} />
-        <IconBlock type="delete" icon={Trash2} />
+        <Popover>
+          <PopoverTrigger>
+            <IconBlock type="success" icon={Check} />
+          </PopoverTrigger>
+          <PopoverContent className="mr-6 flex w-auto items-center gap-4">
+            <span>Coming soon...</span>
+          </PopoverContent>
+        </Popover>
+        <Popover>
+          <PopoverTrigger>
+            <IconBlock type="edit" icon={FileEdit} />
+          </PopoverTrigger>
+          <PopoverContent className="mr-6 flex w-auto items-center gap-4">
+            <span>Coming soon...</span>
+          </PopoverContent>
+        </Popover>
+        <Popover>
+          <PopoverTrigger>
+            <IconBlock type="delete" icon={Trash2} />
+          </PopoverTrigger>
+          <PopoverContent className="mr-6 flex w-auto items-center gap-4">
+            <span>Are you sure?</span>
+            <Button className="h-8">Yes</Button>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );
