@@ -4,9 +4,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { Trash2, FileEdit, Check } from 'lucide-react';
+import { Trash2, FileEdit, Check, RotateCw } from 'lucide-react';
+
+import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
+import deleteTask from '@/app/services/deleteTask';
 
 export default function Task(props) {
   const task = props.task;
@@ -14,6 +17,8 @@ export default function Task(props) {
   const name = task.name;
   const description = task.description;
   const priority = task.priority;
+
+  const [deletingTask, setDeletingTask] = useState(false);
 
   return (
     <div className="relative flex h-24 flex-col justify-center rounded-sm bg-slate-50 pl-4">
@@ -51,7 +56,17 @@ export default function Task(props) {
           </PopoverTrigger>
           <PopoverContent className="mr-6 flex w-auto items-center gap-4">
             <span>Are you sure?</span>
-            <Button className="h-8">Yes</Button>
+            <Button
+              className="flex h-8 w-12"
+              onClick={() => deleteTask(name, setDeletingTask)}
+              disabled={deletingTask}
+            >
+              {deletingTask ? (
+                <RotateCw className="h-4 w-4 animate-spin" />
+              ) : (
+                'Yes'
+              )}
+            </Button>
           </PopoverContent>
         </Popover>
       </div>
